@@ -231,14 +231,12 @@ def extract_claims(attributes):
 def hostname_from_request(request):
     return request.get_host().split(':')[0].lower()
 
-def tenant_name_from_request(request):
-    hostname = hostname_from_request(request)
-    subdomain_prefix = hostname.split('.')[0]
-    return subdomain_prefix
 
 def tenant_from_request(request):
     hostname = hostname_from_request(request)
     subdomain_prefix = hostname.split('.')[0]
+    if subdomain_prefix == 'multitenant':
+        subdomain_prefix='master'
     return Tenant.objects.filter(subdomain_prefix=subdomain_prefix).first()
 
 def tenant_db_from_request(request):

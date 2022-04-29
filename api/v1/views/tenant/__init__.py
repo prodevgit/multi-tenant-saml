@@ -15,7 +15,7 @@ from rest_framework.generics import (CreateAPIView, DestroyAPIView,
 from rest_framework.response import Response
 from tenants.celery_tasks import create_tenant_db
 from tenants.models import Tenant
-from utils.functions import tenant_from_request, tenant_name_from_request
+from utils.functions import tenant_from_request
 
 logger = logging.getLogger(__name__)
 
@@ -25,11 +25,8 @@ class TenantCreateView(CreateAPIView):
     def perform_create(self, serializer):
         data = {}
         try:
-            tenant=tenant_name_from_request(self.request)
-            if tenant == 'multitenant':
-                tenant = Tenant.objects.filter(subdomain_prefix='master').first()
-            else:
-                tenant = tenant_from_request(self.request)
+
+            tenant = tenant_from_request(self.request)
             
             if not tenant.is_master:
                 raise Exception("Only master tenant can create new tenant")
