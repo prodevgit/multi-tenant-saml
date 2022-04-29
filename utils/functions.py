@@ -7,7 +7,7 @@ import re
 from django.db.models.query_utils import Q
 
 from django.contrib.admin.utils import NestedObjects
-from django.db import router
+from django.db import connection, router
 
 from management.models import Module
 
@@ -242,5 +242,7 @@ def tenant_from_request(request):
 def tenant_db_from_request(request):
     hostname = hostname_from_request(request)
     subdomain_prefix = hostname.split('.')[0]
+    threadlocal = connection.get_threadlocal()
+    threadlocal.set_db_name(settings.DATABASES['default']['NAME'])
     logger.info(Tenant.objects.filter(subdomain_prefix=subdomain_prefix))
     return Tenant.objects.filter(subdomain_prefix=subdomain_prefix).first().db_name
