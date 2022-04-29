@@ -1,6 +1,8 @@
 from configparser import ConfigParser
 from pathlib import Path
 
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 config = ConfigParser()
@@ -20,6 +22,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 APP_URL = config.get('settings', 'APP_URL')
+APP_DOMAIN = config.get('settings','APP_DOMAIN')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,10 +37,13 @@ INSTALLED_APPS = [
 
     'accounts',
     'management',
+    'saml',
+    'scripts',
     'tenants'
 ]
 
 MIDDLEWARE = [
+    'tenants.middleware.TenantMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -46,9 +52,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'MultiTenantSAML.middleware.TenantMiddleware',
+    
 ]
-
+MULTITENANT_MAPPER_CLASS = 'tenants.mapper.TenantMapper'
 ROOT_URLCONF = 'MultiTenantSAML.urls'
 
 TEMPLATES = [
@@ -139,11 +145,12 @@ CORS_ALLOW_HEADERS = [
 CORS_ORIGIN_REGEX_WHITELIST = [
     r"^https://(?:.+\.)?prolancehub\.in$",
     r'^(http?://)?localhost:\d{4}',
+    fr"^https://(?:.+\.)?{APP_DOMAIN}$",
 ]
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'db_multitenant.db.backends.mysql',
         'NAME': f"{DATABASE_NAME}",
         'USER': f"{DATABASE_USER}",
         'PASSWORD': f"{DATABASE_PASSWORD}",
@@ -186,11 +193,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-IDP_ENTITY_ID = config.get('saml', 'IDP_ENTITY_ID')
-IDP_SINGLE_SIGN_ON = config.get('saml', 'IDP_SINGLE_SIGN_ON')
-IDP_SINGLE_LOGOUT = config.get('saml', 'IDP_SINGLE_LOGOUT')
-SAML_CERTIFICATE = config.get('saml', 'SAML_CERTIFICATE')
-SP_ENTITY_ID = config.get('saml', 'SP_ENTITY_ID')
-ASSERTION_CONSUMER_SERVICE = config.get('saml', 'ASSERTION_CONSUMER_SERVICE')
-SP_LOGOUT = config.get('saml', 'SP_LOGOUT')
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+
 SECURE_SAML = config.get('saml', 'SECURE_SAML')
