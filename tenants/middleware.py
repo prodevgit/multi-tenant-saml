@@ -18,7 +18,7 @@ class TenantMiddleware(MultiTenantMiddleware):
             db_name = settings.DATABASES['default']['NAME']
         else:
             db_name = tenant_db_from_request(request)
-        
+        logger.info(db_name)
         threadlocal.set_db_name(db_name)
         threadlocal.set_cache_prefix(mapper.get_cache_prefix(request, tenant_name, db_name))
 
