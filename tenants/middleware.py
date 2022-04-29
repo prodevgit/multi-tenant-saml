@@ -14,11 +14,11 @@ class TenantMiddleware(MultiTenantMiddleware):
         tenant_name = mapper.get_tenant_name(request)
         logger.info(tenant_name)
         threadlocal.set_tenant_name(tenant_name)
-        db_name = tenant_db_from_request(request)
-        if db_name == 'multitenant':
-            logger.info('0000000000')
+        if tenant_name == 'multitenant':
             db_name = settings.DATABASES['default']['NAME']
-            logger.info(db_name)
+        else:
+            db_name = tenant_db_from_request(request)
+        
         threadlocal.set_db_name(db_name)
         threadlocal.set_cache_prefix(mapper.get_cache_prefix(request, tenant_name, db_name))
 
