@@ -25,7 +25,7 @@ class TenantCreateView(CreateAPIView):
     def perform_create(self, serializer):
         data = {}
         try:
-            tenant_name_from_request(self.request)
+            tenant=tenant_name_from_request(self.request)
             if tenant == 'multitenant':
                 tenant = Tenant.objects.filter(name='master').first()
             else:
