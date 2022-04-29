@@ -27,7 +27,7 @@ class TenantCreateView(CreateAPIView):
         try:
             tenant=tenant_name_from_request(self.request)
             if tenant == 'multitenant':
-                tenant = Tenant.objects.filter(name='master').first()
+                tenant = Tenant.objects.filter(subdomain_prefix='master').first()
             else:
                 tenant = tenant_from_request(self.request)
             
