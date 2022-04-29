@@ -242,4 +242,5 @@ def tenant_from_request(request):
 def tenant_db_from_request(request):
     hostname = hostname_from_request(request)
     subdomain_prefix = hostname.split('.')[0]
+    logger.info(subdomain_prefix)
     return Tenant.objects.filter(subdomain_prefix=subdomain_prefix).first().db_name
