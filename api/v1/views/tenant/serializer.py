@@ -9,4 +9,4 @@ logger = logging.getLogger(__name__)
 class TenantCreateSerializer(ModelSerializer):
     class Meta:
         model = Tenant
-        exclude = ['db_name']
+        exclude = ['db_name','saml_configuration']
