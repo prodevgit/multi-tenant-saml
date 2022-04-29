@@ -34,6 +34,7 @@ class Command(BaseCommand):
                 password="6282475522",
                 is_superuser=True
                 )
+            saml_configuration = SAMLConfiguration.objects.create
             tenant = Tenant.objects.create(
                 name="Prolance Hub",
                 subdomain_prefix="master",
