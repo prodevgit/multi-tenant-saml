@@ -25,6 +25,8 @@ class TenantCreateView(CreateAPIView):
         data = {}
         try:
             tenant = tenant_from_request(self.request)
+            if tenant == 'multitenant':
+                tenant = 'master'
             if not tenant.is_master:
                 raise Exception("Only master tenant can create new tenant")
             if serializer.is_valid():
